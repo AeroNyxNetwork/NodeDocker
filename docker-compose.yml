@@ -1,0 +1,78 @@
+version: '3'
+services:
+  # # redis镜像用于记录token
+  aero_nyx_db:
+    image: 'redis:6.0'
+    restart: always
+    container_name: aero_nyx_db
+    volumes:
+      - ./data/aero_nyx_db/datadir:/data
+      - ./data/aero_nyx_db/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/aero_nyx_db/logs:/logs
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - '6379:6379'
+
+  aero_nyx_node:
+    container_name: aero_nyx_node
+    image: suifly/suifly_node:0.2
+    privileged: true
+    volumes:
+      - ./data/aero_nyx_node/:/opt/
+    restart: always
+    command: /bin/bash -c "cd /opt/; while true;do sleep 1;cd /opt/;./env.sh;./server; done"
+    # command: /bin/bash -c "cd /opt/; while true;do sleep 1;cd /opt/;./env.sh; done"
+    expose:
+      - 9922
+      - 7788
+    depends_on:
+      - aero_nyx_db
+
+  aero_nyx_api:
+    container_name: aero_nyx_api
+    image: ubuntu:22.04
+    volumes:
+      - ./data/aero_nyx_api/:/opt/
+    restart: always
+    command: /bin/bash -c "cd /opt/; while true;do sleep 1;cd /opt/;./main; done"
+    expose:
+      - 80
+    ports:
+      - "3361:80"
+    depends_on:
+      - aero_nyx_db
+
+
+  aero_nyx_sync:
+    container_name: aero_nyx_sync
+    # image: ubuntu:22.04
+    image: ubuntu:22.04
+    volumes:
+      - ./data/aero_nyx_sync/:/opt/aero_nyx_sync/
+      - ./data/aero_nyx_node/:/opt/aero_nyx_node/
+    restart: always
+    command: /bin/bash -c "cd /opt/aero_nyx_sync/; while true;do sleep 1; ./main; done"
+    expose:
+      - 80
+    depends_on:
+      - aero_nyx_db
+
+  
+
+
+  aero_nyx_nginx:
+      container_name: aero_nyx_nginx
+      image: nginx:1.24.0-alpine
+      command: /bin/sh -c "sleep 5; nginx -g 'daemon off;';"
+      restart: always
+      volumes:
+          - ./data/aero_nyx_nginx/config/default:/etc/nginx/conf.d/default.conf
+          - ./data/aero_nyx_nginx/src/:/var/www/html/
+      ports:
+          - "10003:80"
+      depends_on:
+        - aero_nyx_db
+        - aero_nyx_api
+        - aero_nyx_sync
+        - aero_nyx_node
