@@ -1,6 +1,5 @@
 version: '3'
 services:
-  # # redis镜像用于记录token
   aero_nyx_db:
     image: 'redis:6.0'
     restart: always
@@ -11,8 +10,8 @@ services:
       - ./data/aero_nyx_db/logs:/logs
     command:
       redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - '6379:6379'
+    expose:
+      - 6379
 
   aero_nyx_node:
     container_name: aero_nyx_node
