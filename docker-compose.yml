@@ -15,7 +15,7 @@ services:
 
   aero_nyx_node:
     container_name: aero_nyx_node
-    image: suifly/suifly_node:0.2
+    image: aeronyx/aero_nyx_node:0.1
     privileged: true
     volumes:
       - ./data/aero_nyx_node/:/opt/
