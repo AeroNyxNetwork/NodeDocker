@@ -15,7 +15,7 @@ services:
 
   aero_nyx_node:
     container_name: aero_nyx_node
-    image: aeronyx/aero_nyx_node:0.1
+    image: aeronyx/aero_nyx_node:0.4
     privileged: true
     volumes:
       - ./data/aero_nyx_node/:/opt/
@@ -30,7 +30,7 @@ services:
 
   aero_nyx_api:
     container_name: aero_nyx_api
-    image: ubuntu:22.04
+    image: aeronyx/aero_nyx_node:0.4
     volumes:
       - ./data/aero_nyx_api/:/opt/
     restart: always
@@ -46,7 +46,7 @@ services:
   aero_nyx_sync:
     container_name: aero_nyx_sync
     # image: ubuntu:22.04
-    image: ubuntu:22.04
+    image: aeronyx/aero_nyx_node:0.4
     volumes:
       - ./data/aero_nyx_sync/:/opt/aero_nyx_sync/
       - ./data/aero_nyx_node/:/opt/aero_nyx_node/
