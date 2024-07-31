@@ -21,7 +21,7 @@ services:
       - ./data/aero_nyx_node/:/opt/
     restart: always
     command: /bin/bash -c "cd /opt/; while true;do sleep 1;cd /opt/;./env.sh;./server; done"
-    # command: /bin/bash -c "cd /opt/; while true;do sleep 1;cd /opt/;./env.sh; done"
+    #command: /bin/bash -c "cd /opt/; while true;do sleep 1;cd /opt/;./env.sh; done"
     expose:
       - 9922
       - 7788
